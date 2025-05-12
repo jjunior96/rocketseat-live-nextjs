@@ -1,0 +1,26 @@
+{
+  // Apenas para gravar
+  // "workbench.statusBar.visible": false,
+  // "workbench.editor.showTabs": "none",
+  // "workbench.editor.enablePreview": false,
+  // "workbench.activityBar.location": "hidden",
+  "github.copilot.enable": {
+    "*": false
+  },
+
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript", // if you are using typescript
+    "typescriptreact": "javascript" // if you are using typescript with react
+  },
+  "editor.quickSuggestions": {
+    "strings": true // forces VS Code to trigger completions when editing "string" content
+  },
+  "tailwindCSS.experimental.classRegex": [
+    "tw`([^`]*)", // tw`...`
+    "tw\\.[^`]+`([^`]*)`", // tw.xxx<xxx>`...`
+    "tw\\(.*?\\).*?`([^`]*)" // tw(Component)<xxx>`...`
+  ]
+}

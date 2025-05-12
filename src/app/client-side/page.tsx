@@ -1,67 +1,64 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
+import { MovieGrid } from '@/components/movie-grid';
+import { TopicsList } from '@/components/topics-list';
+import { Movie } from '../types/movies';
 
-interface Repository {
-  id: number
-  name: string
-  description: string
-  html_url: string
-}
+const clientSideIssues = [
+  'Potential CORS issues with some APIs',
+  'API key exposed in client-side code',
+  'Additional client-side network requests',
+  'Visible loading states',
+];
 
 export default function ClientSidePage() {
-  const [repositories, setRepositories] = useState<Repository[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [error, setError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
       try {
-        const response = await fetch('https://api.github.com/users/rocketseat/repos')
-        const data = await response.json()
-        setRepositories(data)
+        const response = await fetch(
+          `http://www.omdbapi.com/?s=avengers&apikey=${process.env.NEXT_PUBLIC_OMDB_API_KEY}`
+        );
+        const data = await response.json();
+
+        if (data.Response === 'True') {
+          setMovies(data.Search);
+        } else {
+          setError(data.Error || 'Failed to fetch movies');
+        }
       } catch (error) {
-        console.error('Error fetching data:', error)
+        console.log(error);
+        setError(
+          'Error fetching movies: This demonstrates potential CORS issues when fetching directly from client-side!'
+        );
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
 
-    loadData()
-  }, [])
+    loadData();
+  }, []);
 
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">Client-side Data Fetching</h1>
-      <div className="mb-4 text-gray-600">
-        Traditional React approach using useEffect and useState. This method:
-        <ul className="list-disc ml-6 mt-2">
-          <li>Loads data after component mount</li>
-          <li>Shows loading state to user</li>
-          <li>Requires client-side JavaScript</li>
-          <li>Not SEO friendly</li>
-        </ul>
-      </div>
+
+      <TopicsList
+        title="Traditional React approach using useEffect and useState. Issues to note:"
+        topics={clientSideIssues}
+      />
 
       {isLoading ? (
-        <div>Loading repositories...</div>
+        <div>Loading movies...</div>
+      ) : error ? (
+        <div className="text-red-500 p-4 border border-red-200 rounded-lg bg-red-50">{error}</div>
       ) : (
-        <div className="grid gap-4">
-          {repositories.map(repo => (
-            <div key={repo.id} className="border p-4 rounded-lg">
-              <h2 className="font-bold">{repo.name}</h2>
-              <p className="text-gray-600">{repo.description}</p>
-              <a 
-                href={repo.html_url}
-                className="text-blue-500 hover:underline mt-2 inline-block"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View repository
-              </a>
-            </div>
-          ))}
-        </div>
+        <MovieGrid movies={movies} />
       )}
     </div>
-  )
+  );
 }
