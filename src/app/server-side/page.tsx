@@ -10,7 +10,11 @@ const serverBenefits = [
 ];
 
 export default async function ServerSidePage() {
-  const movies = await MovieService.getAll();
+  const movies = await MovieService.getAll({
+    options: {
+      cache: 'force-cache',
+    }
+  });
 
   return (
     <div className="p-8">
