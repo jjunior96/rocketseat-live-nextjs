@@ -11,7 +11,11 @@ const staticBenefits = [
 ];
 
 export default async function StaticPage() {
-  const movies = await MovieService.getAll();
+  const movies = await MovieService.getAll({
+    options: {
+      revalidate: 60,
+    }
+  });
 
   return (
     <div className="p-8">
