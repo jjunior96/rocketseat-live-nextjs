@@ -31,7 +31,6 @@ export default function ClientSidePage() {
           setError(data.Error || 'Failed to fetch movies');
         }
       } catch (error) {
-        console.log(error);
         setError(
           'Error fetching movies: This demonstrates potential CORS issues when fetching directly from client-side!'
         );
